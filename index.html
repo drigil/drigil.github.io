@@ -59,6 +59,26 @@
       letter-spacing: 0.02em;
       white-space: nowrap;
     }
+    nav .identity {
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+      white-space: nowrap;
+    }
+    nav .identity a {
+      font-family: var(--sans);
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+      transition: color .15s, border-color .15s;
+    }
+    nav .identity a:hover { color: var(--accent); border-color: var(--accent); }
+    nav .identity .sep {
+      color: var(--border);
+      font-size: 0.82rem;
+    }
     nav .links {
       display: flex;
       gap: 1.75rem;
@@ -132,6 +152,11 @@
       transition: border-color .15s, color .15s;
     }
     .authors a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+    .authors span.plain {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text);
+    }
     .affiliations {
       font-size: 0.8rem;
       color: var(--muted);
@@ -316,57 +341,6 @@
       line-height: 1.55;
     }
 
-    /* results table */
-    .results-wrapper {
-      overflow-x: auto;
-      margin-top: 1.4rem;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.82rem;
-      font-family: var(--mono);
-    }
-    thead tr {
-      background: var(--accent);
-      color: #fff;
-    }
-    thead th {
-      padding: 0.7rem 0.9rem;
-      text-align: left;
-      font-weight: 500;
-      font-size: 0.75rem;
-      letter-spacing: 0.04em;
-      white-space: nowrap;
-    }
-    tbody tr { border-bottom: 1px solid var(--border); }
-    tbody tr:last-child { border-bottom: none; }
-    tbody tr:nth-child(odd) { background: #fafaf8; }
-    tbody td {
-      padding: 0.6rem 0.9rem;
-      color: var(--text);
-      white-space: nowrap;
-    }
-    tbody td.best {
-      color: var(--accent);
-      font-weight: 500;
-    }
-    tbody tr.ours td {
-      background: #eef1fa;
-    }
-    tbody tr.ours td:first-child {
-      font-weight: 600;
-      color: var(--accent);
-    }
-    .table-caption {
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-top: 0.6rem;
-      line-height: 1.5;
-    }
-
     /* video */
     .video-embed {
       margin-top: 1.4rem;
@@ -440,6 +414,18 @@
     }
     footer a { color: var(--accent); text-decoration: none; }
 
+    /* contact */
+    .contact-block {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.4rem 1.4rem;
+      margin-top: 0.9rem;
+      font-size: 0.8rem;
+    }
+    .contact-block a { color: var(--accent); text-decoration: none; }
+    .contact-block a:hover { text-decoration: underline; }
+
     @media (max-width: 600px) {
       nav .links { display: none; }
       header h1 { font-size: 1.7rem; }
@@ -452,12 +438,16 @@
 <!-- NAV -->
 <nav>
   <div class="inner">
-    <span class="wordmark">NeuBase</span>
+    <div class="identity">
+      <a href="mailto:anshulmendiratta@tamu.edu" title="Email Anshul Mendiratta">Anshul Mendiratta</a>
+      <span class="sep">·</span>
+      <span class="wordmark">NeuBase</span>
+    </div>
     <ul class="links">
       <li><a href="#abstract">Abstract</a></li>
-      <li><a href="#results">Results</a></li>
       <li><a href="#video">Video</a></li>
       <li><a href="#bibtex">BibTeX</a></li>
+      <li><a href="#contact">Contact</a></li>
     </ul>
   </div>
 </nav>
@@ -469,14 +459,14 @@
   <p class="subtitle">Neural parametric surfaces that fit accurately and deform in real time</p>
 
   <div class="authors">
-    <a href="#">Anshul Mendiratta</a>
-    <a href="#">Lei Yang</a>
-    <a href="#">Xin Li</a>
-    <a href="#">John Keyser</a>
-    <a href="#">Scott Schaefer</a>
-    <a href="#">Wenping Wang</a>
+    <a href="mailto:anshulmendiratta@tamu.edu" title="Email Anshul Mendiratta">Anshul Mendiratta<sup>1</sup></a>
+    <span class="plain">Lei Yang<sup>2</sup></span>
+    <span class="plain">Xin Li<sup>1</sup></span>
+    <span class="plain">John Keyser<sup>1</sup></span>
+    <span class="plain">Scott Schaefer<sup>1</sup></span>
+    <span class="plain">Wenping Wang<sup>1</sup></span>
   </div>
-  <p class="affiliations">Texas A&amp;M University &nbsp;·&nbsp; The University of Hong Kong</p>
+  <p class="affiliations"><sup>1</sup>Texas A&amp;M University &nbsp;·&nbsp; <sup>2</sup>The University of Hong Kong</p>
 
   <div class="btn-row">
     <a class="btn btn-primary" href="https://dl.acm.org/doi/10.1145/3811355" target="_blank">
@@ -530,57 +520,12 @@
   <!-- RESULTS -->
   <section id="results">
     <p class="section-label">Results</p>
-    <h2>Surface Fitting &amp; Deformation</h2>
+    <h2>Real-Time Deformation</h2>
     <p>
-      We evaluate on 75 shapes from the MPZ dataset. NeuBase consistently outperforms NGF and NeuPPS across
-      point-to-surface distance (P2S), Hausdorff distance (HD), and normal angular error (NAE), while using
-      comparable storage — and reduces P2S to roughly ¼ of conventional CC subdivision surfaces.
+      NeuBase supports <strong>real-time shape deformation</strong> at 25–40 fps by directly manipulating
+      control vertices or offset vectors, without any network retraining. Global rigid transformations and scaling
+      are exact; local edits affect only the local neighbourhood, preserving fine geometric detail elsewhere.
     </p>
-
-    <div class="results-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>Method</th>
-            <th>P2S (×10⁻⁴) ↓</th>
-            <th>HD (×10⁻³) ↓</th>
-            <th>NAE (°) ↓</th>
-            <th>Storage (KB) ↓</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>CC Subdivision</td>
-            <td>~4× ours</td>
-            <td>&gt;2× ours</td>
-            <td>&gt;2× ours</td>
-            <td>comparable</td>
-          </tr>
-          <tr>
-            <td>NGF</td>
-            <td>8.401</td>
-            <td>14.16</td>
-            <td>6.412</td>
-            <td>~156</td>
-          </tr>
-          <tr>
-            <td>NeuPPS</td>
-            <td>5.472</td>
-            <td>13.21</td>
-            <td>4.641</td>
-            <td>~155</td>
-          </tr>
-          <tr class="ours">
-            <td>NeuBase (Ours)</td>
-            <td class="best">4.556</td>
-            <td class="best">12.83</td>
-            <td class="best">4.251</td>
-            <td class="best">~153</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="table-caption">Average over 75 MPZ shapes. Lower is better. NeuBase achieves the best accuracy across all metrics at comparable storage.</p>
 
     <!-- Qualitative figure placeholder -->
     <figure class="fig" style="margin-top:2rem;">
@@ -593,12 +538,6 @@
         hair strands, and wing rings — that CC surfaces, NGF, and NeuPPS fail to reconstruct faithfully.
       </figcaption>
     </figure>
-
-    <p style="margin-top:1.6rem;">
-      NeuBase also supports <strong>real-time shape deformation</strong> at 25–40 fps by directly manipulating
-      control vertices or offset vectors, without any network retraining. Global rigid transformations and scaling
-      are exact; local edits affect only the local neighbourhood, preserving fine geometric detail elsewhere.
-    </p>
 
     <!-- Deformation figure placeholder -->
     <figure class="fig" style="margin-top:1.2rem;">
@@ -654,7 +593,7 @@
 
 </main>
 
-<footer>
+<footer id="contact">
   <p>
     <a href="https://dl.acm.org/doi/10.1145/3811355">ACM Digital Library</a>
     &nbsp;·&nbsp;
@@ -664,6 +603,9 @@
     © 2026 Mendiratta et al. Licensed under
     <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.
   </p>
+  <div class="contact-block">
+    <span>Anshul Mendiratta — <a href="mailto:anshulmendiratta@tamu.edu">anshulmendiratta@tamu.edu</a></span>
+  </div>
 </footer>
 
 <script>
