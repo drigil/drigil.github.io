@@ -213,6 +213,31 @@
     }
     .teaser figcaption strong { color: var(--text); }
 
+    /* teaser overlay labels (mirrors LaTeX overpic \put coordinates) */
+    .teaser-figure {
+      position: relative;
+      width: 100%;
+      line-height: 0;
+    }
+    .teaser-figure img { width: 100%; display: block; }
+    .teaser-label {
+      position: absolute;
+      transform: translateY(-50%);
+      font-family: var(--sans);
+      color: #1a1916;
+      white-space: nowrap;
+      line-height: 1.3;
+    }
+    .teaser-label.title {
+      font-size: clamp(0.6rem, 1.1vw, 0.95rem);
+      font-weight: 600;
+    }
+    .teaser-label.metric {
+      font-size: clamp(0.45rem, 0.8vw, 0.7rem);
+      color: var(--muted);
+      font-family: var(--mono);
+    }
+
     /* ── MAIN CONTENT ── */
     main {
       max-width: var(--max);
@@ -446,7 +471,7 @@
 <header>
   <div class="venue-tag">ACM Transactions on Graphics &nbsp;·&nbsp; SIGGRAPH 2026</div>
   <h1><em>NeuBase</em>: Spline Surfaces with Neural Basis Functions</h1>
-  <p class="subtitle">A neural parametric surface representation that is compact, smooth and editable</p>
+  <p class="subtitle">Neural parametric surfaces that fit accurately and deform in real time</p>
 
   <div class="authors">
     <a href="mailto:anshulmendiratta@tamu.edu" title="Email Anshul Mendiratta">Anshul Mendiratta<sup>1</sup></a>
@@ -477,14 +502,29 @@
 <!-- TEASER -->
 <div class="teaser">
   <figure>
-    <!-- Replace with your actual teaser image: <img src="teaser.png" alt="NeuBase teaser"> -->
-    <div style="background:#e8e6e0;height:340px;display:flex;align-items:center;justify-content:center;color:#aaa;font-family:var(--mono);font-size:0.8rem;">
-      [ teaser.png — replace this placeholder ]
+    <div class="teaser-figure">
+      <img src="assets/teaser.png" alt="NeuBase teaser: target shape, NeuBase reconstruction, quad control mesh with offset vectors, NeuBase deformation, and comparisons to CC surface, NGF, and NeuPPS">
+      <span class="teaser-label title" style="left:9%; top:46.25%;">(a) Target</span>
+      <span class="teaser-label metric" style="left:2%; top:49.95%;">P2S×10⁴ / HD×10³ / NAE / Storage (KB)</span>
+      <span class="teaser-label title" style="left:32%; top:46.25%;">(b) NeuBase (Ours)</span>
+      <span class="teaser-label metric" style="left:31%; top:49.95%;">4.085 / 9.352 / 7.183° / 153</span>
+      <span class="teaser-label title" style="left:56%; top:46.25%;">(c) Quad control mesh</span>
+      <span class="teaser-label metric" style="left:58%; top:49.95%;">with offset vectors</span>
+      <span class="teaser-label title" style="left:78%; top:46.25%;">(d) NeuBase deformation</span>
+      <span class="teaser-label title" style="left:13%; top:96.29%;">(e) CC surface</span>
+      <span class="teaser-label metric" style="left:12%; top:100%;">14.72 / 47.65 / 11.70° / 153</span>
+      <span class="teaser-label title" style="left:48%; top:96.29%;">(f) NGF</span>
+      <span class="teaser-label metric" style="left:45%; top:100%;">9.041 / 11.02 / 7.438° / 156</span>
+      <span class="teaser-label title" style="left:80%; top:96.29%;">(g) NeuPPS</span>
+      <span class="teaser-label metric" style="left:77%; top:100%;">8.623 / 16.448 / 7.779° / 155</span>
     </div>
     <figcaption>
-      <strong>NeuBase</strong> combines the compactness of neural representations with the editability of classical splines.
-      Given a coarse quadrilateral control mesh, NeuBase accurately fits complex target surfaces (left) and supports
-      real-time, training-free deformation by directly manipulating control vertices (right).
+      We present <strong>NeuBase</strong>, a neural parametric surface representation that combines the compactness of
+      neural representations with the editability of classic spline representations. Given a quadrilateral control mesh (c),
+      our representation achieves accurate surface fitting (b) of a target shape (a). NeuBase outperforms baseline methods —
+      conventional Catmull&ndash;Clark subdivision surfaces (e), NGF (f), and NeuPPS (g) — with similar numbers of trainable
+      parameters. Quad control meshes, error maps, and fitting metrics are provided. Unlike other neural representations,
+      NeuBase supports real-time, free-form surface deformation (d) without retraining the network.
     </figcaption>
   </figure>
 </div>
