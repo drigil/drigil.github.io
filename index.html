@@ -455,7 +455,6 @@
     <span class="wordmark">NeuBase</span>
     <ul class="links">
       <li><a href="#abstract">Abstract</a></li>
-      <li><a href="#method">Method</a></li>
       <li><a href="#results">Results</a></li>
       <li><a href="#video">Video</a></li>
       <li><a href="#bibtex">BibTeX</a></li>
@@ -465,7 +464,7 @@
 
 <!-- HEADER -->
 <header>
-  <div class="venue-tag">ACM Trans. Graph. &nbsp;·&nbsp; SIGGRAPH 2026</div>
+  <div class="venue-tag">ACM Transactions on Graphics &nbsp;·&nbsp; SIGGRAPH 2026</div>
   <h1><em>NeuBase</em>: Spline Surfaces with Neural Basis Functions</h1>
   <p class="subtitle">Neural parametric surfaces that fit accurately and deform in real time</p>
 
@@ -525,63 +524,6 @@
       neural network. In addition, we propose a scalable neural map that maintains memory efficiency even for complex
       shapes with dense control meshes. Experiments on a large-scale dataset demonstrate that our method achieves
       better fitting accuracy than state-of-the-art neural parametric surface representations.
-    </div>
-  </section>
-
-  <!-- METHOD -->
-  <section id="method">
-    <p class="section-label">Method</p>
-    <h2>Spline Surfaces with Neural Basis Functions</h2>
-    <p>
-      Existing neural surface representations directly encode geometry through nonlinear mappings, sacrificing
-      fundamental spline properties like affine equivariance and local editability. NeuBase sidesteps this tension by
-      decoupling geometry from the neural component.
-    </p>
-    <p>
-      The surface is expressed as the sum of a <strong>Catmull–Clark base surface</strong> S<sub>B</sub>, which
-      captures global shape from a sparse quad control mesh, and a learned <strong>offset field</strong>
-      S<sub>O</sub>, which models fine-scale detail through neural basis functions. Each neural basis function
-      N<sub>i</sub>(u) is formed as the product of a neural channel function φ and the corresponding CC basis
-      function B<sub>i</sub>(u), inheriting its local support and smoothness.
-    </p>
-    <p>
-      To scale to complex meshes without assigning an independent network per vertex, we introduce a compact
-      <strong>vertex-channel assignment</strong> formulated as an equitable graph coloring problem. Control vertices
-      sharing the same patch are assigned distinct channels; vertices that never co-influence a patch share a channel.
-      This reduces the output dimension from |P| to deg(G)+1 (typically 60–80 channels), keeping storage compact
-      while preserving fitting accuracy.
-    </p>
-
-    <!-- Pipeline figure placeholder -->
-    <figure class="fig">
-      <div style="background:#edecea;height:260px;display:flex;align-items:center;justify-content:center;color:#aaa;font-family:var(--mono);font-size:0.8rem;">
-        [ pipeline figure (Fig. 3 from paper) ]
-      </div>
-      <figcaption>
-        <strong>Fig. 2 — NeuBase pipeline.</strong> A quad control mesh (a) defines the CC base surface (b).
-        Learnable feature vectors are lifted to a spline feature manifold (d), processed by a compact MLP to produce
-        neural basis functions (e). The offset field (f) is added to the base surface to obtain the NeuBase surface (g).
-      </figcaption>
-    </figure>
-
-    <p class="section-label" style="margin-top:2rem;">Geometric Properties</p>
-    <div class="props-grid">
-      <div class="prop-card">
-        <div class="prop-name">Linearity</div>
-        <p>Surface positions respond predictably to control-vertex or offset edits — enabling stable, training-free deformation.</p>
-      </div>
-      <div class="prop-card">
-        <div class="prop-name">Locality</div>
-        <p>Editing a control vertex or offset only affects the surface within its local neighborhood, matching CC behaviour.</p>
-      </div>
-      <div class="prop-card">
-        <div class="prop-name">Smoothness</div>
-        <p>Neural basis functions inherit C² continuity from the CC bases (C¹ at extraordinary vertices).</p>
-      </div>
-      <div class="prop-card">
-        <div class="prop-name">Affine Equivariance</div>
-        <p>Consistent affine transformations of the control mesh induce the same transformation on the fitted surface.</p>
-      </div>
     </div>
   </section>
 
@@ -716,7 +658,7 @@
   <p>
     <a href="https://dl.acm.org/doi/10.1145/3811355">ACM Digital Library</a>
     &nbsp;·&nbsp;
-    ACM Trans. Graph., Vol. 45, No. 4, Article 88. July 2026.
+    ACM Transactions on Graphics, Vol. 45, No. 4, Article 88. July 2026.
   </p>
   <p style="margin-top:0.5rem;">
     © 2026 Mendiratta et al. Licensed under
