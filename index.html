@@ -51,30 +51,18 @@
       height: 52px;
       gap: 1rem;
     }
-    nav .identity {
-      display: flex;
-      align-items: baseline;
-      gap: 0.6rem;
+    nav .wordmark {
+      font-family: var(--mono);
+      font-weight: 500;
+      font-size: 0.85rem;
+      color: var(--accent);
+      letter-spacing: 0.02em;
       white-space: nowrap;
     }
-    nav .identity a {
-      font-family: var(--sans);
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--text);
-      text-decoration: none;
-      border-bottom: 1px solid transparent;
-      transition: color .15s, border-color .15s;
-    }
-    nav .identity a:hover { color: var(--accent); border-color: var(--accent); }
     nav .links {
       display: flex;
-      align-items: center;
       gap: 1.75rem;
       list-style: none;
-      padding-left: 1.75rem;
-      margin-left: 0.4rem;
-      border-left: 1px solid var(--border);
     }
     nav .links a {
       font-size: 0.82rem;
@@ -144,11 +132,6 @@
       transition: border-color .15s, color .15s;
     }
     .authors a:hover { color: var(--accent); border-bottom-color: var(--accent); }
-    .authors span.plain {
-      font-size: 0.95rem;
-      font-weight: 500;
-      color: var(--text);
-    }
     .affiliations {
       font-size: 0.8rem;
       color: var(--muted);
@@ -212,38 +195,6 @@
       border-top: 1px solid var(--border);
     }
     .teaser figcaption strong { color: var(--text); }
-
-    /* teaser overlay labels (mirrors LaTeX overpic \put coordinates) */
-    .teaser-figure {
-      position: relative;
-      width: 100%;
-      line-height: 0;
-    }
-    .teaser-figure img { width: 100%; display: block; }
-    .teaser-label-group {
-      position: absolute;
-      transform: translate(-50%, 0);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      line-height: 1.3;
-      width: 23%;
-    }
-    .teaser-label-group .title {
-      font-family: var(--sans);
-      font-size: clamp(0.55rem, 1vw, 0.9rem);
-      font-weight: 600;
-      color: #1a1916;
-      white-space: normal;
-    }
-    .teaser-label-group .metric {
-      font-family: var(--mono);
-      font-size: clamp(0.4rem, 0.68vw, 0.62rem);
-      color: var(--muted);
-      white-space: normal;
-      word-break: keep-all;
-    }
 
     /* ── MAIN CONTENT ── */
     main {
@@ -365,6 +316,57 @@
       line-height: 1.55;
     }
 
+    /* results table */
+    .results-wrapper {
+      overflow-x: auto;
+      margin-top: 1.4rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      font-family: var(--mono);
+    }
+    thead tr {
+      background: var(--accent);
+      color: #fff;
+    }
+    thead th {
+      padding: 0.7rem 0.9rem;
+      text-align: left;
+      font-weight: 500;
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+    tbody tr { border-bottom: 1px solid var(--border); }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:nth-child(odd) { background: #fafaf8; }
+    tbody td {
+      padding: 0.6rem 0.9rem;
+      color: var(--text);
+      white-space: nowrap;
+    }
+    tbody td.best {
+      color: var(--accent);
+      font-weight: 500;
+    }
+    tbody tr.ours td {
+      background: #eef1fa;
+    }
+    tbody tr.ours td:first-child {
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .table-caption {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 0.6rem;
+      line-height: 1.5;
+    }
+
     /* video */
     .video-embed {
       margin-top: 1.4rem;
@@ -438,18 +440,6 @@
     }
     footer a { color: var(--accent); text-decoration: none; }
 
-    /* contact */
-    .contact-block {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 0.4rem 1.4rem;
-      margin-top: 0.9rem;
-      font-size: 0.8rem;
-    }
-    .contact-block a { color: var(--accent); text-decoration: none; }
-    .contact-block a:hover { text-decoration: underline; }
-
     @media (max-width: 600px) {
       nav .links { display: none; }
       header h1 { font-size: 1.7rem; }
@@ -462,14 +452,12 @@
 <!-- NAV -->
 <nav>
   <div class="inner">
-    <div class="identity">
-      <a href="mailto:anshulmendiratta@tamu.edu" title="Email Anshul Mendiratta">Anshul Mendiratta</a>
-    </div>
+    <span class="wordmark">NeuBase</span>
     <ul class="links">
       <li><a href="#abstract">Abstract</a></li>
+      <li><a href="#results">Results</a></li>
       <li><a href="#video">Video</a></li>
       <li><a href="#bibtex">BibTeX</a></li>
-      <li><a href="#contact">Contact</a></li>
     </ul>
   </div>
 </nav>
@@ -478,17 +466,17 @@
 <header>
   <div class="venue-tag">ACM Transactions on Graphics &nbsp;·&nbsp; SIGGRAPH 2026</div>
   <h1><em>NeuBase</em>: Spline Surfaces with Neural Basis Functions</h1>
-  <p class="subtitle">A neural parametric surface representation that is compact, smooth and editable</p>
+  <p class="subtitle">Neural parametric surfaces that fit accurately and deform in real time</p>
 
   <div class="authors">
-    <a href="mailto:anshulmendiratta@tamu.edu" title="Email Anshul Mendiratta">Anshul Mendiratta<sup>1</sup></a>
-    <a href="https://leiyangjustin.github.io/" target="_blank">Lei Yang<sup>2</sup></a>
-    <a href="https://people.tamu.edu/~xinli/" target="_blank">Xin Li<sup>1</sup></a>
-    <a href="https://people.engr.tamu.edu/keyser/index.html" target="_blank">John Keyser<sup>1</sup></a>
-    <a href="https://people.engr.tamu.edu/schaefer/index.html" target="_blank">Scott Schaefer<sup>1</sup></a>
-    <a href="https://engineering.tamu.edu/cse/profiles/Wang-Wenping.html" target="_blank">Wenping Wang<sup>1</sup></a>
+    <a href="#">Anshul Mendiratta</a>
+    <a href="#">Lei Yang</a>
+    <a href="#">Xin Li</a>
+    <a href="#">John Keyser</a>
+    <a href="#">Scott Schaefer</a>
+    <a href="#">Wenping Wang</a>
   </div>
-  <p class="affiliations"><sup>1</sup>Texas A&amp;M University &nbsp;·&nbsp; <sup>2</sup>The University of Hong Kong</p>
+  <p class="affiliations">Texas A&amp;M University &nbsp;·&nbsp; The University of Hong Kong</p>
 
   <div class="btn-row">
     <a class="btn btn-primary" href="https://dl.acm.org/doi/10.1145/3811355" target="_blank">
@@ -499,13 +487,9 @@
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
       Video
     </a>
-    <a class="btn btn-outline" href="assets/slides.pdf" target="_blank">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="1"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-      Slides
-    </a>
     <a class="btn btn-outline" href="#" title="Code coming soon">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-      Code (Coming soon)
+      Code (soon)
     </a>
   </div>
 </header>
@@ -513,43 +497,14 @@
 <!-- TEASER -->
 <div class="teaser">
   <figure>
-    <div class="teaser-figure">
-      <img src="assets/teaser.png" alt="NeuBase teaser: target shape, NeuBase reconstruction, quad control mesh with offset vectors, NeuBase deformation, and comparisons to CC surface, NGF, and NeuPPS">
-      <div class="teaser-label-group" style="left:12.5%; top:40.27%;">
-        <span class="title">(a) Target</span>
-        <span class="metric">P2S×10⁴ / HD×10³ / NAE / Storage (KB)</span>
-      </div>
-      <div class="teaser-label-group" style="left:38.5%; top:40.27%;">
-        <span class="title">(b) NeuBase (Ours)</span>
-        <span class="metric">4.085 / 9.352 / 7.183° / 153</span>
-      </div>
-      <div class="teaser-label-group" style="left:64%; top:40.27%;">
-        <span class="title">(c) Quad control mesh</span>
-        <span class="metric">with offset vectors</span>
-      </div>
-      <div class="teaser-label-group" style="left:85%; top:40.27%;">
-        <span class="title">(d) NeuBase deformation</span>
-      </div>
-      <div class="teaser-label-group" style="left:17.5%; top:83.86%;">
-        <span class="title">(e) CC surface</span>
-        <span class="metric">14.72 / 47.65 / 11.70° / 153</span>
-      </div>
-      <div class="teaser-label-group" style="left:50.5%; top:83.86%;">
-        <span class="title">(f) NGF</span>
-        <span class="metric">9.041 / 11.02 / 7.438° / 156</span>
-      </div>
-      <div class="teaser-label-group" style="left:83.5%; top:83.86%;">
-        <span class="title">(g) NeuPPS</span>
-        <span class="metric">8.623 / 16.448 / 7.779° / 155</span>
-      </div>
+    <!-- Replace with your actual teaser image: <img src="teaser.png" alt="NeuBase teaser"> -->
+    <div style="background:#e8e6e0;height:340px;display:flex;align-items:center;justify-content:center;color:#aaa;font-family:var(--mono);font-size:0.8rem;">
+      [ teaser.png — replace this placeholder ]
     </div>
     <figcaption>
-      We present <strong>NeuBase</strong>, a neural parametric surface representation that combines the compactness of
-      neural representations with the editability of classic spline representations. Given a quadrilateral control mesh (c),
-      our representation achieves accurate surface fitting (b) of a target shape (a). NeuBase outperforms baseline methods —
-      conventional Catmull&ndash;Clark subdivision surfaces (e), NGF (f), and NeuPPS (g) — with similar numbers of trainable
-      parameters. Quad control meshes, error maps, and fitting metrics are provided. Unlike other neural representations,
-      NeuBase supports real-time, free-form surface deformation (d) without retraining the network.
+      <strong>NeuBase</strong> combines the compactness of neural representations with the editability of classical splines.
+      Given a coarse quadrilateral control mesh, NeuBase accurately fits complex target surfaces (left) and supports
+      real-time, training-free deformation by directly manipulating control vertices (right).
     </figcaption>
   </figure>
 </div>
@@ -575,28 +530,86 @@
   <!-- RESULTS -->
   <section id="results">
     <p class="section-label">Results</p>
-    <h2>Surface Fitting Comparison</h2>
+    <h2>Surface Fitting &amp; Deformation</h2>
     <p>
-      In comparison to other state-of-the-art methods with a similar number of trainable parameters, NeuBase
-      achieves better fitting accuracy.
+      We evaluate on 75 shapes from the MPZ dataset. NeuBase consistently outperforms NGF and NeuPPS across
+      point-to-surface distance (P2S), Hausdorff distance (HD), and normal angular error (NAE), while using
+      comparable storage — and reduces P2S to roughly ¼ of conventional CC subdivision surfaces.
     </p>
 
-    <!-- Qualitative figure placeholder -->
+    <div class="results-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>P2S (×10⁻⁴) ↓</th>
+            <th>HD (×10⁻³) ↓</th>
+            <th>NAE (°) ↓</th>
+            <th>Storage (KB) ↓</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>CC Subdivision</td>
+            <td>~4× ours</td>
+            <td>&gt;2× ours</td>
+            <td>&gt;2× ours</td>
+            <td>comparable</td>
+          </tr>
+          <tr>
+            <td>NGF</td>
+            <td>8.401</td>
+            <td>14.16</td>
+            <td>6.412</td>
+            <td>~156</td>
+          </tr>
+          <tr>
+            <td>NeuPPS</td>
+            <td>5.472</td>
+            <td>13.21</td>
+            <td>4.641</td>
+            <td>~155</td>
+          </tr>
+          <tr class="ours">
+            <td>NeuBase (Ours)</td>
+            <td class="best">4.556</td>
+            <td class="best">12.83</td>
+            <td class="best">4.251</td>
+            <td class="best">~153</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="table-caption">Average over 75 MPZ shapes. Lower is better. NeuBase achieves the best accuracy across all metrics at comparable storage.</p>
+
+    <!-- Qualitative figure -->
     <figure class="fig" style="margin-top:2rem;">
-      <div style="background:#edecea;height:320px;display:flex;align-items:center;justify-content:center;color:#aaa;font-family:var(--mono);font-size:0.8rem;">
-        [ qualitative comparison figure (Fig. 6 from paper) ]
+      <div style="position:relative; line-height:0; overflow:hidden;">
+        <img src="assets/comparison.png" alt="Qualitative comparison"
+             style="width:100%; display:block; clip-path:inset(0 0 19.5% 0);">
+
+        <!-- shape name labels -->
+        <div style="position:absolute; left:11%; top:13%; font-size:clamp(0.5rem,1vw,0.82rem); font-weight:700; font-family:var(--sans); color:#1a1916; line-height:1;">Red Circular Box</div>
+        <div style="position:absolute; left:38%; top:13%; font-size:clamp(0.5rem,1vw,0.82rem); font-weight:700; font-family:var(--sans); color:#1a1916; line-height:1;">Bimba</div>
+        <div style="position:absolute; left:62%; top:13%; font-size:clamp(0.5rem,1vw,0.82rem); font-weight:700; font-family:var(--sans); color:#1a1916; line-height:1;">Vase Lion</div>
+        <div style="position:absolute; left:70%; top:16%; font-size:clamp(0.5rem,1vw,0.82rem); font-weight:700; font-family:var(--sans); color:#1a1916; line-height:1;">Gargoyle</div>
+
+        <!-- row labels -->
+        <div style="position:absolute; left:0.4%; top:16%; font-size:clamp(0.45rem,0.85vw,0.75rem); font-family:var(--sans); color:#1a1916; line-height:1;">(a) Target shapes</div>
+        <div style="position:absolute; left:0.4%; top:36%; font-size:clamp(0.45rem,0.85vw,0.75rem); font-family:var(--sans); color:#1a1916; line-height:1;">(b) CC surfaces</div>
+        <div style="position:absolute; left:0.4%; top:55%; font-size:clamp(0.45rem,0.85vw,0.75rem); font-family:var(--sans); color:#1a1916; line-height:1;">(c) NGF</div>
+        <div style="position:absolute; left:0.4%; top:75%; font-size:clamp(0.45rem,0.85vw,0.75rem); font-family:var(--sans); color:#1a1916; line-height:1;">(d) NeuPPS</div>
+        <div style="position:absolute; left:0.4%; top:94%; font-size:clamp(0.45rem,0.85vw,0.75rem); font-family:var(--sans); color:#1a1916; line-height:1;">(e) <strong>NeuBase (Ours)</strong></div>
       </div>
       <figcaption>
-        <strong>Qualitative comparison.</strong> For each shape, we show error maps coloured by point-to-surface
-        distance (blue = low, red = high). NeuBase consistently captures fine-scale detail — sculpting patterns,
-        hair strands, and wing rings — that CC surfaces, NGF, and NeuPPS fail to reconstruct faithfully.
+        <strong>Qualitative comparison.</strong> Surface fitting on challenging shapes vs. conventional Catmull–Clark (CC) surfaces (b), NGF (c), and NeuPPS (d). Error maps show point-wise distance (blue = low, red = high, clipped at [0, 0.003]). NeuBase consistently captures fine-scale detail that baselines miss.
       </figcaption>
     </figure>
 
-    <h2 style="margin-top:2.5rem;">Real-Time Deformation</h2>
-    <p>
-      NeuBase supports <strong>real-time shape deformation</strong> at 25–40 fps by directly manipulating
-      control vertices or offset vectors, without any network retraining.
+    <p style="margin-top:1.6rem;">
+      NeuBase also supports <strong>real-time shape deformation</strong> at 25–40 fps by directly manipulating
+      control vertices or offset vectors, without any network retraining. Global rigid transformations and scaling
+      are exact; local edits affect only the local neighbourhood, preserving fine geometric detail elsewhere.
     </p>
 
     <!-- Deformation figure placeholder -->
@@ -617,10 +630,12 @@
     <p class="section-label">Video</p>
     <h2>Supplementary Video</h2>
     <div class="video-embed">
-      <video controls style="width:100%; height:100%; object-fit:contain;">
-        <source src="assets/demo.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
+      <!-- Replace src with your YouTube/Vimeo embed URL -->
+      <div class="video-placeholder">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <p>Video embed — replace with YouTube/Vimeo iframe src</p>
+      </div>
+      <!-- Example: <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID" allowfullscreen></iframe> -->
     </div>
   </section>
 
@@ -651,7 +666,7 @@
 
 </main>
 
-<footer id="contact">
+<footer>
   <p>
     <a href="https://dl.acm.org/doi/10.1145/3811355">ACM Digital Library</a>
     &nbsp;·&nbsp;
@@ -661,9 +676,6 @@
     © 2026 Mendiratta et al. Licensed under
     <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.
   </p>
-  <div class="contact-block">
-    <span>Anshul Mendiratta — <a href="mailto:anshulmendiratta@tamu.edu">anshulmendiratta@tamu.edu</a></span>
-  </div>
 </footer>
 
 <script>
