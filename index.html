@@ -1,7 +1,739 @@
----
-# You don't need to edit this file, it's empty on purpose.
-# Edit theme's home layout instead if you wanna make some changes
-# See: https://jekyllrb.com/docs/themes/#overriding-theme-defaults
-layout: home
-author_profile: true
----
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NeuBase: Spline Surfaces with Neural Basis Functions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #f7f6f3;
+      --surface:   #ffffff;
+      --border:    #e2e0da;
+      --text:      #1a1916;
+      --muted:     #6b6860;
+      --accent:    #2f52a0;   /* blueprint blue — fits geometry/CAD world */
+      --accent2:   #c9480e;   /* warm error-map orange, from the paper's own color scale */
+      --mono:      'JetBrains Mono', monospace;
+      --serif:     'Source Serif 4', Georgia, serif;
+      --sans:      'Inter', system-ui, sans-serif;
+      --max:       860px;
+      --wide:      1100px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      font-size: 16px;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(247,246,243,0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+    }
+    nav .inner {
+      max-width: var(--wide);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 52px;
+      gap: 1rem;
+    }
+    nav .wordmark {
+      font-family: var(--mono);
+      font-weight: 500;
+      font-size: 0.85rem;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+    nav .links {
+      display: flex;
+      gap: 1.75rem;
+      list-style: none;
+    }
+    nav .links a {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      transition: color .15s;
+    }
+    nav .links a:hover { color: var(--accent); }
+
+    /* ── HERO ── */
+    header {
+      padding: 5rem 2rem 4rem;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+    header .venue-tag {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 3px;
+      padding: 0.2em 0.7em;
+      margin-bottom: 1.6rem;
+    }
+    header h1 {
+      font-family: var(--serif);
+      font-weight: 300;
+      font-size: clamp(2rem, 5vw, 3rem);
+      line-height: 1.2;
+      max-width: 750px;
+      margin: 0 auto 0.5rem;
+      letter-spacing: -0.01em;
+    }
+    header h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+    header .subtitle {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--muted);
+      margin-bottom: 2.4rem;
+    }
+
+    /* authors */
+    .authors {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.35rem 1.4rem;
+      margin-bottom: 0.6rem;
+    }
+    .authors a {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color .15s, color .15s;
+    }
+    .authors a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+    .affiliations {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 2.4rem;
+    }
+
+    /* buttons */
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 0;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.55em 1.2em;
+      border-radius: 5px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all .15s;
+      border: 1.5px solid transparent;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .btn-primary:hover { background: #24408a; border-color: #24408a; }
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border-color: var(--border);
+    }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── TEASER ── */
+    .teaser {
+      max-width: var(--wide);
+      margin: 3rem auto 0;
+      padding: 0 2rem;
+    }
+    .teaser figure {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .teaser img {
+      width: 100%;
+      display: block;
+    }
+    .teaser figcaption {
+      padding: 1rem 1.4rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.55;
+      border-top: 1px solid var(--border);
+    }
+    .teaser figcaption strong { color: var(--text); }
+
+    /* ── MAIN CONTENT ── */
+    main {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    section {
+      padding: 4rem 0 0;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 0.9rem;
+    }
+    h2 {
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: 1.65rem;
+      margin-bottom: 1.1rem;
+      letter-spacing: -0.01em;
+    }
+    p {
+      color: #2d2c28;
+      margin-bottom: 1rem;
+    }
+    p:last-child { margin-bottom: 0; }
+
+    /* abstract box */
+    .abstract-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 6px 6px 0;
+      padding: 1.6rem 1.8rem;
+      font-family: var(--serif);
+      font-size: 1rem;
+      line-height: 1.8;
+      color: var(--text);
+    }
+
+    /* contributions */
+    .contrib-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      margin-top: 1rem;
+    }
+    .contrib-list li {
+      display: flex;
+      gap: 0.9rem;
+      align-items: flex-start;
+    }
+    .contrib-list .bullet {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      margin-top: 1px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .contrib-list .bullet svg {
+      width: 10px; height: 10px; fill: #fff;
+    }
+
+    /* properties grid */
+    .props-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 1.2rem;
+    }
+    .prop-card {
+      background: var(--surface);
+      padding: 1.2rem 1.3rem;
+    }
+    .prop-card .prop-name {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--accent);
+      margin-bottom: 0.35rem;
+      letter-spacing: 0.01em;
+    }
+    .prop-card p {
+      font-size: 0.83rem;
+      color: var(--muted);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* figure */
+    .fig {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 1.6rem 0 0;
+    }
+    .fig img { width: 100%; display: block; }
+    .fig figcaption {
+      padding: 0.85rem 1.2rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      line-height: 1.55;
+    }
+
+    /* results table */
+    .results-wrapper {
+      overflow-x: auto;
+      margin-top: 1.4rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      font-family: var(--mono);
+    }
+    thead tr {
+      background: var(--accent);
+      color: #fff;
+    }
+    thead th {
+      padding: 0.7rem 0.9rem;
+      text-align: left;
+      font-weight: 500;
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+    tbody tr { border-bottom: 1px solid var(--border); }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:nth-child(odd) { background: #fafaf8; }
+    tbody td {
+      padding: 0.6rem 0.9rem;
+      color: var(--text);
+      white-space: nowrap;
+    }
+    tbody td.best {
+      color: var(--accent);
+      font-weight: 500;
+    }
+    tbody tr.ours td {
+      background: #eef1fa;
+    }
+    tbody tr.ours td:first-child {
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .table-caption {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 0.6rem;
+      line-height: 1.5;
+    }
+
+    /* video */
+    .video-embed {
+      margin-top: 1.4rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      aspect-ratio: 16/9;
+      background: #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .video-placeholder {
+      text-align: center;
+      color: #666;
+    }
+    .video-placeholder p { color: #888; font-size: 0.85rem; margin-top: 0.5rem; }
+    .video-embed iframe {
+      width: 100%; height: 100%; border: none;
+    }
+
+    /* bibtex */
+    .bibtex-block {
+      background: #1a1916;
+      border-radius: 8px;
+      padding: 1.4rem 1.6rem;
+      margin-top: 1.4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .bibtex-block pre {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: #c9c5b8;
+      line-height: 1.7;
+      overflow-x: auto;
+      white-space: pre;
+    }
+    .bibtex-block .kw  { color: #7eb3f5; }
+    .bibtex-block .str { color: #a8d08d; }
+    .copy-btn {
+      position: absolute;
+      top: 0.8rem; right: 0.8rem;
+      background: #2d2c28;
+      border: 1px solid #444;
+      color: #aaa;
+      font-size: 0.72rem;
+      font-family: var(--mono);
+      padding: 0.25em 0.7em;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .copy-btn:hover { background: #3a3834; color: #fff; }
+
+    /* divider */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 4rem 0 0;
+    }
+
+    /* footer */
+    footer {
+      padding: 3rem 2rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      margin-top: 4rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+
+    @media (max-width: 600px) {
+      nav .links { display: none; }
+      header h1 { font-size: 1.7rem; }
+      .props-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="inner">
+    <span class="wordmark">NeuBase</span>
+    <ul class="links">
+      <li><a href="#abstract">Abstract</a></li>
+      <li><a href="#method">Method</a></li>
+      <li><a href="#results">Results</a></li>
+      <li><a href="#video">Video</a></li>
+      <li><a href="#bibtex">BibTeX</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HEADER -->
+<header>
+  <div class="venue-tag">ACM Trans. Graph. &nbsp;·&nbsp; SIGGRAPH 2026</div>
+  <h1><em>NeuBase</em>: Spline Surfaces with Neural Basis Functions</h1>
+  <p class="subtitle">Neural parametric surfaces that fit accurately and deform in real time</p>
+
+  <div class="authors">
+    <a href="#">Anshul Mendiratta</a>
+    <a href="#">Lei Yang</a>
+    <a href="#">Xin Li</a>
+    <a href="#">John Keyser</a>
+    <a href="#">Scott Schaefer</a>
+    <a href="#">Wenping Wang</a>
+  </div>
+  <p class="affiliations">Texas A&amp;M University &nbsp;·&nbsp; The University of Hong Kong</p>
+
+  <div class="btn-row">
+    <a class="btn btn-primary" href="https://dl.acm.org/doi/10.1145/3811355" target="_blank">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Paper (ACM)
+    </a>
+    <a class="btn btn-outline" href="#video">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Video
+    </a>
+    <a class="btn btn-outline" href="#" title="Code coming soon">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      Code (soon)
+    </a>
+  </div>
+</header>
+
+<!-- TEASER -->
+<div class="teaser">
+  <figure>
+    <!-- Replace with your actual teaser image: <img src="teaser.png" alt="NeuBase teaser"> -->
+    <div style="background:#e8e6e0;height:340px;display:flex;align-items:center;justify-content:center;color:#aaa;font-family:var(--mono);font-size:0.8rem;">
+      [ teaser.png — replace this placeholder ]
+    </div>
+    <figcaption>
+      <strong>NeuBase</strong> combines the compactness of neural representations with the editability of classical splines.
+      Given a coarse quadrilateral control mesh, NeuBase accurately fits complex target surfaces (left) and supports
+      real-time, training-free deformation by directly manipulating control vertices (right).
+    </figcaption>
+  </figure>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- ABSTRACT -->
+  <section id="abstract">
+    <p class="section-label">Abstract</p>
+    <div class="abstract-box">
+      We introduce <strong>NeuBase</strong>, a neural parametric surface representation that both accurately fits target
+      surfaces with fine geometric detail and supports intuitive real-time surface deformation. NeuBase consists of a
+      Catmull–Clark subdivision base surface and an offset field defined by a set of neural basis functions encoded via
+      a neural map. By construction, NeuBase surfaces exhibit four fundamental geometric properties — linearity,
+      locality, smoothness, and affine equivariance — enabling real-time, direct manipulation without retraining the
+      neural network. In addition, we propose a scalable neural map that maintains memory efficiency even for complex
+      shapes with dense control meshes. Experiments on a large-scale dataset demonstrate that our method achieves
+      better fitting accuracy than state-of-the-art neural parametric surface representations.
+    </div>
+  </section>
+
+  <!-- METHOD -->
+  <section id="method">
+    <p class="section-label">Method</p>
+    <h2>Spline Surfaces with Neural Basis Functions</h2>
+    <p>
+      Existing neural surface representations directly encode geometry through nonlinear mappings, sacrificing
+      fundamental spline properties like affine equivariance and local editability. NeuBase sidesteps this tension by
+      decoupling geometry from the neural component.
+    </p>
+    <p>
+      The surface is expressed as the sum of a <strong>Catmull–Clark base surface</strong> S<sub>B</sub>, which
+      captures global shape from a sparse quad control mesh, and a learned <strong>offset field</strong>
+      S<sub>O</sub>, which models fine-scale detail through neural basis functions. Each neural basis function
+      N<sub>i</sub>(u) is formed as the product of a neural channel function φ and the corresponding CC basis
+      function B<sub>i</sub>(u), inheriting its local support and smoothness.
+    </p>
+    <p>
+      To scale to complex meshes without assigning an independent network per vertex, we introduce a compact
+      <strong>vertex-channel assignment</strong> formulated as an equitable graph coloring problem. Control vertices
+      sharing the same patch are assigned distinct channels; vertices that never co-influence a patch share a channel.
+      This reduces the output dimension from |P| to deg(G)+1 (typically 60–80 channels), keeping storage compact
+      while preserving fitting accuracy.
+    </p>
+
+    <!-- Pipeline figure placeholder -->
+    <figure class="fig">
+      <div style="background:#edecea;height:260px;display:flex;align-items:center;justify-content:center;color:#aaa;font-family:var(--mono);font-size:0.8rem;">
+        [ pipeline figure (Fig. 3 from paper) ]
+      </div>
+      <figcaption>
+        <strong>Fig. 2 — NeuBase pipeline.</strong> A quad control mesh (a) defines the CC base surface (b).
+        Learnable feature vectors are lifted to a spline feature manifold (d), processed by a compact MLP to produce
+        neural basis functions (e). The offset field (f) is added to the base surface to obtain the NeuBase surface (g).
+      </figcaption>
+    </figure>
+
+    <p class="section-label" style="margin-top:2rem;">Geometric Properties</p>
+    <div class="props-grid">
+      <div class="prop-card">
+        <div class="prop-name">Linearity</div>
+        <p>Surface positions respond predictably to control-vertex or offset edits — enabling stable, training-free deformation.</p>
+      </div>
+      <div class="prop-card">
+        <div class="prop-name">Locality</div>
+        <p>Editing a control vertex or offset only affects the surface within its local neighborhood, matching CC behaviour.</p>
+      </div>
+      <div class="prop-card">
+        <div class="prop-name">Smoothness</div>
+        <p>Neural basis functions inherit C² continuity from the CC bases (C¹ at extraordinary vertices).</p>
+      </div>
+      <div class="prop-card">
+        <div class="prop-name">Affine Equivariance</div>
+        <p>Consistent affine transformations of the control mesh induce the same transformation on the fitted surface.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="results">
+    <p class="section-label">Results</p>
+    <h2>Surface Fitting &amp; Deformation</h2>
+    <p>
+      We evaluate on 75 shapes from the MPZ dataset. NeuBase consistently outperforms NGF and NeuPPS across
+      point-to-surface distance (P2S), Hausdorff distance (HD), and normal angular error (NAE), while using
+      comparable storage — and reduces P2S to roughly ¼ of conventional CC subdivision surfaces.
+    </p>
+
+    <div class="results-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>P2S (×10⁻⁴) ↓</th>
+            <th>HD (×10⁻³) ↓</th>
+            <th>NAE (°) ↓</th>
+            <th>Storage (KB) ↓</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>CC Subdivision</td>
+            <td>~4× ours</td>
+            <td>&gt;2× ours</td>
+            <td>&gt;2× ours</td>
+            <td>comparable</td>
+          </tr>
+          <tr>
+            <td>NGF</td>
+            <td>8.401</td>
+            <td>14.16</td>
+            <td>6.412</td>
+            <td>~156</td>
+          </tr>
+          <tr>
+            <td>NeuPPS</td>
+            <td>5.472</td>
+            <td>13.21</td>
+            <td>4.641</td>
+            <td>~155</td>
+          </tr>
+          <tr class="ours">
+            <td>NeuBase (Ours)</td>
+            <td class="best">4.556</td>
+            <td class="best">12.83</td>
+            <td class="best">4.251</td>
+            <td class="best">~153</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="table-caption">Average over 75 MPZ shapes. Lower is better. NeuBase achieves the best accuracy across all metrics at comparable storage.</p>
+
+    <!-- Qualitative figure placeholder -->
+    <figure class="fig" style="margin-top:2rem;">
+      <div style="background:#edecea;height:320px;display:flex;align-items:center;justify-content:center;color:#aaa;font-family:var(--mono);font-size:0.8rem;">
+        [ qualitative comparison figure (Fig. 6 from paper) ]
+      </div>
+      <figcaption>
+        <strong>Qualitative comparison.</strong> For each shape, we show error maps coloured by point-to-surface
+        distance (blue = low, red = high). NeuBase consistently captures fine-scale detail — sculpting patterns,
+        hair strands, and wing rings — that CC surfaces, NGF, and NeuPPS fail to reconstruct faithfully.
+      </figcaption>
+    </figure>
+
+    <p style="margin-top:1.6rem;">
+      NeuBase also supports <strong>real-time shape deformation</strong> at 25–40 fps by directly manipulating
+      control vertices or offset vectors, without any network retraining. Global rigid transformations and scaling
+      are exact; local edits affect only the local neighbourhood, preserving fine geometric detail elsewhere.
+    </p>
+
+    <!-- Deformation figure placeholder -->
+    <figure class="fig" style="margin-top:1.2rem;">
+      <div style="background:#edecea;height:260px;display:flex;align-items:center;justify-content:center;color:#aaa;font-family:var(--mono);font-size:0.8rem;">
+        [ deformation examples figure (Fig. 5 from paper) ]
+      </div>
+      <figcaption>
+        <strong>Deformation examples.</strong> Global (translation, rotation, scaling) and local (rotating the head,
+        adjusting beak offset vectors) deformations on the Hawk shape. Colour maps show deformation magnitude,
+        confirming the locality property.
+      </figcaption>
+    </figure>
+  </section>
+
+  <!-- VIDEO -->
+  <section id="video">
+    <p class="section-label">Video</p>
+    <h2>Supplementary Video</h2>
+    <div class="video-embed">
+      <!-- Replace src with your YouTube/Vimeo embed URL -->
+      <div class="video-placeholder">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <p>Video embed — replace with YouTube/Vimeo iframe src</p>
+      </div>
+      <!-- Example: <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID" allowfullscreen></iframe> -->
+    </div>
+  </section>
+
+  <!-- BIBTEX -->
+  <section id="bibtex">
+    <p class="section-label">Citation</p>
+    <h2>BibTeX</h2>
+    <div class="bibtex-block">
+      <button class="copy-btn" onclick="copyBib()">copy</button>
+      <pre id="bib-pre"><span class="kw">@article</span>{mendiratta2026neubase,
+  <span class="str">author</span>    = {Mendiratta, Anshul and Yang, Lei and Li, Xin and
+               Keyser, John and Schaefer, Scott and Wang, Wenping},
+  <span class="str">title</span>     = {NeuBase: Spline Surfaces with Neural Basis Functions},
+  <span class="str">journal</span>   = {ACM Transactions on Graphics},
+  <span class="str">volume</span>    = {45},
+  <span class="str">number</span>    = {4},
+  <span class="str">articleno</span> = {88},
+  <span class="str">year</span>      = {2026},
+  <span class="str">month</span>     = {July},
+  <span class="str">pages</span>     = {1--18},
+  <span class="str">doi</span>       = {10.1145/3811355},
+  <span class="str">publisher</span> = {ACM},
+}</pre>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+</main>
+
+<footer>
+  <p>
+    <a href="https://dl.acm.org/doi/10.1145/3811355">ACM Digital Library</a>
+    &nbsp;·&nbsp;
+    ACM Trans. Graph., Vol. 45, No. 4, Article 88. July 2026.
+  </p>
+  <p style="margin-top:0.5rem;">
+    © 2026 Mendiratta et al. Licensed under
+    <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.
+  </p>
+</footer>
+
+<script>
+  function copyBib() {
+    const raw = document.getElementById('bib-pre').innerText;
+    navigator.clipboard.writeText(raw).then(() => {
+      const btn = document.querySelector('.copy-btn');
+      btn.textContent = 'copied!';
+      setTimeout(() => btn.textContent = 'copy', 2000);
+    });
+  }
+</script>
+
+</body>
+</html>
